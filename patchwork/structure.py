@@ -35,7 +35,7 @@ class Structure:
         logging.debug("Adding " + role + " with private_hostname " + instance['private_hostname'] + ", public_hostname " + instance['public_hostname'])
         self.Instances[role].append(Connection(instance, username, key_filename))
 
-    def setup_from_yamlfile(self, yamlfile="/etc/rhui-testing.yaml"):
+    def setup_from_yamlfile(self, yamlfile):
         '''
         Setup from yaml config
         '''

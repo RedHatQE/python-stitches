@@ -22,7 +22,6 @@ Requires:	python-paramiko python-nose PyYAML
 
 %install
 %{__python} setup.py install -O1 --root $RPM_BUILD_ROOT
-%{__mkdir_p} $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
