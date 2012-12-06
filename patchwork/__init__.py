@@ -1,3 +1,7 @@
+import connection
+import expect
+import structure
+
 import logging
 
 if __name__ == "__main__":
