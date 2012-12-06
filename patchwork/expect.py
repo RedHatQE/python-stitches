@@ -41,7 +41,7 @@ class Expect():
                     return retvalue
             time.sleep(1)
             count += 1
-        raise ExpectFailed()
+        raise ExpectFailed(result)
 
     @staticmethod
     def expect(connection, strexp, timeout=5):
@@ -86,7 +86,7 @@ class Expect():
                 return ret_list
             time.sleep(1)
             count += 1
-        raise ExpectFailed()
+        raise ExpectFailed(result)
 
     @staticmethod
     def enter(connection, command):
