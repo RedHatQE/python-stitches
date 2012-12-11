@@ -1,4 +1,5 @@
 import paramiko
+import time
 
 
 class Connection():
@@ -37,3 +38,18 @@ class Connection():
         @return (stdin, stdout, stderr)
         '''
         return self.cli.exec_command(command, bufsize)
+
+    def recv_exit_status(self, command, timeout):
+	'''
+	Get result from executed command
+	@param command:  a string command to execute
+	@param timeout: timeout
+	'''
+	stdin, stdout, stderr = self.cli.exec_command(command)
+	if stdout:
+	    for i in range(timeout):
+	        if stdout.channel.exit_status_ready():
+		    return stdout.channel.recv_exit_status()
+		time.sleep(1)
+	else:
+ 	    return None	
