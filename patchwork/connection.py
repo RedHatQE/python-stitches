@@ -9,9 +9,23 @@ class Connection():
     def __init__(self, instance, username="root", key_filename=None, timeout=10):
         self.parameters = instance.copy()
         # hostname is set for compatibility issues only, will be deprecated in future
-        self.hostname = instance['private_hostname']
-        self.private_hostname = instance['private_hostname']
-        self.public_hostname = instance['public_hostname']
+        if 'private_hostname' in instance.keys() and 'public_hostname' in instance.keys():
+            # Custom stuff
+            self.hostname = instance['private_hostname']
+            self.private_hostname = instance['private_hostname']
+            self.public_hostname = instance['public_hostname']
+        elif 'public_dns_name' in instance.keys() and 'private_ip_address' in instance.keys():
+            # Amazon EC2/VPC instance
+            if instance['public_dns_name'] != '':
+                # EC2
+                self.hostname = instance['public_dns_name']
+                self.private_hostname = instance['public_dns_name']
+                self.public_hostname = instance['public_dns_name']
+            else:
+                # VPC
+                self.hostname = instance['private_ip_address']
+                self.private_hostname = instance['private_ip_address']
+                self.public_hostname = instance['private_ip_address']
         self.username = username
         self.key_filename = key_filename
         self.cli = paramiko.SSHClient()
