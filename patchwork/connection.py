@@ -59,11 +59,15 @@ class Connection():
 	@param command:  a string command to execute
 	@param timeout: timeout
 	'''
+        status = None
 	stdin, stdout, stderr = self.cli.exec_command(command)
-	if stdout:
+	if stdout and stderr and stdin:
 	    for i in range(timeout):
 	        if stdout.channel.exit_status_ready():
-		    return stdout.channel.recv_exit_status()
+                    status = stdout.channel.recv_exit_status()
+                    break
 		time.sleep(1)
-	else:
- 	    return None	
+            stdin.close()
+            stdout.close()
+            stderr.close()
+        return status
