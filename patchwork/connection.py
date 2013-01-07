@@ -30,7 +30,11 @@ class Connection():
         self.key_filename = key_filename
         self.cli = paramiko.SSHClient()
         self.cli.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.cli.connect(hostname=self.private_hostname, username=username, key_filename=key_filename, look_for_keys=False, timeout=10)
+        if key_filename:
+            look_for_keys = False
+        else:
+            look_for_keys = True
+        self.cli.connect(hostname=self.private_hostname, username=username, key_filename=key_filename, look_for_keys=look_for_keys, timeout=10)
         self.channel = self.cli.invoke_shell()
         self.sftp = self.cli.open_sftp()
         self.channel.setblocking(0)
