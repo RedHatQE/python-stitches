@@ -47,6 +47,7 @@ class Connection():
         self.cli.connect(hostname=self.private_hostname, username=self.username, key_filename=self.key_filename)
         self.channel = self.cli.invoke_shell()
         self.sftp = self.cli.open_sftp()
+        self.channel.setblocking(0)
 
     def exec_command(self, command, bufsize=-1):
         '''
