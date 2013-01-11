@@ -16,13 +16,13 @@ class Expect():
     Class to do expect-ike stuff over paramiko connection
     '''
     @staticmethod
-    def expect_list(connection, regexp_list, timeout=5):
+    def expect_list(connection, regexp_list, timeout=10):
         '''
         Expect a list of expressions
 
         @param connection: paramiko connection
         @param regexp_list: list of tuples (regexp, return value)
-        @param timeout: timeout (default to 5)
+        @param timeout: timeout (default to 10)
         '''
         result = ""
         count = 0
@@ -44,25 +44,25 @@ class Expect():
         raise ExpectFailed(result)
 
     @staticmethod
-    def expect(connection, strexp, timeout=5):
+    def expect(connection, strexp, timeout=10):
         '''
         Expect one expression
 
         @param connection: paramiko connection
         @param strexp: string to convert to expression (.*string.*)
-        @param timeout: timeout (default to 5)
+        @param timeout: timeout (default to 10)
         '''
         return Expect.expect_list(connection, [(re.compile(".*" + strexp + ".*", re.DOTALL), True)], timeout)
 
     @staticmethod
-    def match(connection, regexp, grouplist=[1], timeout=5):
+    def match(connection, regexp, grouplist=[1], timeout=10):
         '''
         Match against an expression
 
         @param connection: paramiko connection
         @param regexp: compiled regular expression
         @param grouplist: list of groups to return (defaults to [1])
-        @param timeout: timeout (default to 5)
+        @param timeout: timeout (default to 10)
 
         '''
         logging.debug("MATCHING: " + regexp.pattern)
@@ -96,7 +96,7 @@ class Expect():
         return connection.channel.send(command + "\n")
 
     @staticmethod
-    def ping_pong(connection, command, strexp, timeout=5):
+    def ping_pong(connection, command, strexp, timeout=10):
         '''
         Enter a command and wait for something to happen (enter + expect combined)
         '''
