@@ -102,3 +102,12 @@ class Expect():
         '''
         Expect.enter(connection, command)
         Expect.expect(connection, strexp, timeout)
+
+    @staticmethod
+    def expect_retval(connection, command, expected_status=0, timeout=10):
+        '''
+        Run command and expect specified return valud
+        '''
+        retval = connection.recv_exit_status(command, timeout)
+        if retval != expected_status:
+            raise ExpectFailed("Got %s exit status (%s expected)" % (retval, expected_status))
