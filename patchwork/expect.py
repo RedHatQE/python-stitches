@@ -2,6 +2,7 @@ import re
 import time
 import logging
 import socket
+import sys
 
 
 class ExpectFailed(AssertionError):
@@ -30,6 +31,8 @@ class Expect():
             try:
                 recv_part = connection.channel.recv(16384)
                 logging.debug("RCV: " + recv_part)
+                if connection.output_shell:
+                    sys.stdout.write(recv_part)
                 result += recv_part
             except socket.timeout:
                 # socket.timeout here means 'no more data'
@@ -72,6 +75,8 @@ class Expect():
             try:
                 recv_part = connection.channel.recv(16384)
                 logging.debug("RCV: " + recv_part)
+                if connection.output_shell:
+                    sys.stdout.write(recv_part)
                 result += recv_part
             except socket.timeout:
                 # socket.timeout here means 'no more data'

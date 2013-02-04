@@ -6,7 +6,7 @@ class Connection():
     '''
     Stateful object to represent paramiko connection to the host
     '''
-    def __init__(self, instance, username="root", key_filename=None, timeout=10):
+    def __init__(self, instance, username="root", key_filename=None, timeout=10, output_shell=False):
         self.parameters = instance.copy()
         # hostname is set for compatibility issues only, will be deprecated in future
         if 'private_hostname' in instance.keys() and 'public_hostname' in instance.keys():
@@ -38,6 +38,7 @@ class Connection():
         self.channel = self.cli.invoke_shell()
         self.sftp = self.cli.open_sftp()
         self.channel.setblocking(0)
+        self.output_shell = output_shell
 
     def reconnect(self):
         '''
