@@ -35,7 +35,7 @@ class Connection():
         else:
             look_for_keys = True
         self.cli.connect(hostname=self.private_hostname, username=username, key_filename=key_filename, look_for_keys=look_for_keys, timeout=10)
-        self.channel = self.cli.invoke_shell()
+        self.channel = self.cli.invoke_shell(width=360, height=80)
         self.sftp = self.cli.open_sftp()
         self.channel.setblocking(0)
         self.output_shell = output_shell
@@ -46,7 +46,7 @@ class Connection():
         '''
         self.cli.close()
         self.cli.connect(hostname=self.private_hostname, username=self.username, key_filename=self.key_filename)
-        self.channel = self.cli.invoke_shell()
+        self.channel = self.cli.invoke_shell(width=360, height=80)
         self.sftp = self.cli.open_sftp()
         self.channel.setblocking(0)
 
