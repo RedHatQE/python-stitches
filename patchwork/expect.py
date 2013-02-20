@@ -114,7 +114,9 @@ class Expect():
         Run command and expect specified return valud
         '''
         retval = connection.recv_exit_status(command, timeout)
+        if retval is None:
+            raise ExpectFailed("Got timeout (%i seconds) while executing '%s'" % (timeout, command))
+        elif retval != expected_status:
+            raise ExpectFailed("Got %s exit status (%s expected)" % (retval, expected_status))
         if connection.output_shell:
             sys.stdout.write("Run '%s', got %i return value\n" % (command, retval))
-        if retval != expected_status:
-            raise ExpectFailed("Got %s exit status (%s expected)" % (retval, expected_status))
