@@ -1,5 +1,5 @@
 Name:		python-patchwork
-Version:	0.2
+Version:	0.3
 Release:	1%{?dist}
 Summary:	Multihost actions toolbox
 
@@ -33,6 +33,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/patchwork/*.py*
 
 %changelog
+* Thu Mar 14 2013 Vitaly Kuznetsov <vitty@redhat.com> 0.3-1
+- 0.3
+
 * Tue Dec 04 2012 Vitaly Kuznetsov <vitty@redhat.com> 0.2-1
 - new package built with tito
 
