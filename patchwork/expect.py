@@ -1,3 +1,7 @@
+"""
+Expect-like stuff
+"""
+
 import re
 import time
 import logging
@@ -14,16 +18,27 @@ class ExpectFailed(AssertionError):
 
 class Expect():
     '''
-    Class to do expect-ike stuff over paramiko connection
+    Stateless class to do expect-ike stuff over connections
     '''
+
     @staticmethod
     def expect_list(connection, regexp_list, timeout=10):
         '''
         Expect a list of expressions
 
-        @param connection: paramiko connection
-        @param regexp_list: list of tuples (regexp, return value)
-        @param timeout: timeout (default to 10)
+        @param connection: Connection to the host
+        @type connection: L{Connection}
+
+        @param regexp_list: regular expressions and associated return values
+        @type regexp_list: list of (regexp, return value)
+
+        @param timeout: timeout for performing expect operation
+        @type timeout: int
+
+        @return: propper return value from regexp_list
+        @rtype: return value
+
+        @raises ExpectFailed
         '''
         result = ""
         count = 0
@@ -51,22 +66,46 @@ class Expect():
         '''
         Expect one expression
 
-        @param connection: paramiko connection
+        @param connection: Connection to the host
+        @type connection: L{Connection}
+
         @param strexp: string to convert to expression (.*string.*)
-        @param timeout: timeout (default to 10)
+        @type strexp: str
+
+        @param timeout: timeout for performing expect operation
+        @type timeout: int
+
+        @return: True if succeeded
+        @rtype: bool
+
+        @raises ExpectFailed
         '''
-        return Expect.expect_list(connection, [(re.compile(".*" + strexp + ".*", re.DOTALL), True)], timeout)
+        return Expect.expect_list(connection,
+                                  [(re.compile(".*" + strexp + ".*",
+                                               re.DOTALL), True)],
+                                  timeout)
 
     @staticmethod
     def match(connection, regexp, grouplist=[1], timeout=10):
         '''
         Match against an expression
 
-        @param connection: paramiko connection
-        @param regexp: compiled regular expression
-        @param grouplist: list of groups to return (defaults to [1])
-        @param timeout: timeout (default to 10)
+        @param connection: Connection to the host
+        @type connection: L{Connection}
 
+        @param regexp: compiled regular expression
+        @type regexp: L{SRE_Pattern}
+
+        @param grouplist: list of groups to return
+        @type group: list of int
+
+        @param timeout: timeout for performing expect operation
+        @type timeout: int
+
+        @return: matched string
+        @rtype: str
+
+        @raises ExpectFailed
         '''
         logging.debug("MATCHING: " + regexp.pattern)
         result = ""
@@ -97,26 +136,74 @@ class Expect():
     def enter(connection, command):
         '''
         Enter a command to the channel (with '\n' appended)
+
+        @param connection: Connection to the host
+        @type connection: L{Connection}
+
+        @param command: command to execute
+        @type command: str
+
+        @return: number of bytes actually sent
+        @rtype: int
         '''
         return connection.channel.send(command + "\n")
 
     @staticmethod
     def ping_pong(connection, command, strexp, timeout=10):
         '''
-        Enter a command and wait for something to happen (enter + expect combined)
+        Enter a command and wait for something to happen (enter + expect
+        combined)
+
+        @param connection: connection to the host
+        @type connection: L{Connection}
+
+        @param command: command to execute
+        @type command: str
+
+        @param strexp: string to convert to expression (.*string.*)
+        @type strexp: str
+
+        @param timeout: timeout for performing expect operation
+        @type  timeout: int
+
+        @return: True if succeeded
+        @rtype: bool
+
+        @raises ExpectFailed
         '''
         Expect.enter(connection, command)
-        Expect.expect(connection, strexp, timeout)
+        return Expect.expect(connection, strexp, timeout)
 
     @staticmethod
     def expect_retval(connection, command, expected_status=0, timeout=10):
         '''
         Run command and expect specified return valud
+
+        @param connection: connection to the host
+        @type connection: L{Connection}
+
+        @param command: command to execute
+        @type command: str
+
+        @param expected_status: expected return value
+        @type expected_status: int
+
+        @param timeout: timeout for performing expect operation
+        @type  timeout: int
+
+        @return: return value
+        @rtype: int
+
+        @raises ExpectFailed
         '''
         retval = connection.recv_exit_status(command, timeout)
         if retval is None:
-            raise ExpectFailed("Got timeout (%i seconds) while executing '%s'" % (timeout, command))
+            raise ExpectFailed("Got timeout (%i seconds) while executing '%s'"
+                               % (timeout, command))
         elif retval != expected_status:
-            raise ExpectFailed("Got %s exit status (%s expected)" % (retval, expected_status))
+            raise ExpectFailed("Got %s exit status (%s expected)"
+                               % (retval, expected_status))
         if connection.output_shell:
-            sys.stdout.write("Run '%s', got %i return value\n" % (command, retval))
+            sys.stdout.write("Run '%s', got %i return value\n"
+                             % (command, retval))
+        return retval
