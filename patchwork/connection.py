@@ -22,8 +22,8 @@ class Connection():
         Create connection object
 
         @param instance: host parameters we would like to establish connection
-                         to
-        @type instance: dict
+                         to (or just a hostname)
+        @type instance: dict or str
 
         @param username: user name for creating ssh connection
         @type username: str
@@ -38,28 +38,31 @@ class Connection():
                              output
         @type output_shell: bool
         """
-        self.parameters = instance.copy()
+        if type(instance) == str:
+            self.parameters = {'private_hostname': instance, 'public_hostname': instance}
+        else:
+            self.parameters = instance.copy()
         # hostname is set for compatibility issues only, will be deprecated
         # in future
-        if 'private_hostname' in instance.keys() and \
-                'public_hostname' in instance.keys():
+        if 'private_hostname' in self.parameters.keys() and \
+                'public_hostname' in self.parameters.keys():
             # Custom stuff
-            self.hostname = instance['private_hostname']
-            self.private_hostname = instance['private_hostname']
-            self.public_hostname = instance['public_hostname']
-        elif 'public_dns_name' in instance.keys() and \
-                'private_ip_address' in instance.keys():
+            self.hostname = self.parameters['private_hostname']
+            self.private_hostname = self.parameters['private_hostname']
+            self.public_hostname = self.parameters['public_hostname']
+        elif 'public_dns_name' in self.parameters.keys() and \
+                'private_ip_address' in self.parameters.keys():
             # Amazon EC2/VPC instance
-            if instance['public_dns_name'] != '':
+            if self.parameters['public_dns_name'] != '':
                 # EC2
-                self.hostname = instance['public_dns_name']
-                self.private_hostname = instance['public_dns_name']
-                self.public_hostname = instance['public_dns_name']
+                self.hostname = self.parameters['public_dns_name']
+                self.private_hostname = self.parameters['public_dns_name']
+                self.public_hostname = self.parameters['public_dns_name']
             else:
                 # VPC
-                self.hostname = instance['private_ip_address']
-                self.private_hostname = instance['private_ip_address']
-                self.public_hostname = instance['private_ip_address']
+                self.hostname = self.parameters['private_ip_address']
+                self.private_hostname = self.parameters['private_ip_address']
+                self.public_hostname = self.parameters['private_ip_address']
         self.username = username
         self.output_shell = output_shell
         self.key_filename = key_filename
