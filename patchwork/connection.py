@@ -17,7 +17,7 @@ class Connection():
     Stateful object to represent connection to the host
     """
     def __init__(self, instance, username="root", key_filename=None,
-                 timeout=10, output_shell=False):
+                 timeout=10, output_shell=False, disable_rpyc=False):
         """
         Create connection object
 
@@ -68,6 +68,7 @@ class Connection():
         self.key_filename = key_filename
         self.cli = paramiko.SSHClient()
         self.cli.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.disable_rpyc = disable_rpyc
         if key_filename:
             look_for_keys = False
         else:
@@ -94,7 +95,11 @@ class Connection():
         self.channel = self.cli.invoke_shell(width=360, height=80)
         self.sftp = self.cli.open_sftp()
         self.channel.setblocking(0)
-        self._connect_rpyc()
+        if not self.disable_rpyc:
+            self._connect_rpyc()
+        else:
+            self.pbm = None
+            self.rpyc = None
 
     def _disconnect(self):
         self.cli.close()
