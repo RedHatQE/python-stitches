@@ -4,7 +4,7 @@ from setuptools import setup
 import glob
 
 setup(name='patchwork',
-    version='0.3',
+    version='0.4',
     description='Multihost actions toolbox',
     author='Vitaly Kuznetsov',
     author_email='vitty@redhat.com',

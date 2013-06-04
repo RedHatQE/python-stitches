@@ -1,5 +1,5 @@
 Name:		python-patchwork
-Version:	0.3
+Version:	0.4
 Release:	1%{?dist}
 Summary:	Multihost actions toolbox
 
@@ -11,7 +11,7 @@ BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:  noarch
 
 BuildRequires:	python-devel
-Requires:	python-paramiko python-nose PyYAML
+Requires:	python-paramiko python-nose PyYAML python-plumbum python-rpyc
 
 %description
 
@@ -33,6 +33,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/patchwork/*.py*
 
 %changelog
+* Tue Jun 04 2013 Vitaly Kuznetsov <vitty@redhat.com> 0.4-1
+- add disable_rpyc option (speed up) (vitty@redhat.com)
+- connection.py: allow hostname-only connections (vitty@redhat.com)
+- Add python-rpyc support (vitty@redhat.com)
 * Thu Mar 14 2013 Vitaly Kuznetsov <vitty@redhat.com> 0.3-1
 - 0.3
 
