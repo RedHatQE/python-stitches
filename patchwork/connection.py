@@ -69,6 +69,12 @@ class Connection():
         self.cli = paramiko.SSHClient()
         self.cli.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.disable_rpyc = disable_rpyc
+
+        # debugging buffers
+        self.last_command = ""
+        self.last_stdout = ""
+        self.last_stderr = ""
+
         if key_filename:
             look_for_keys = False
         else:
@@ -172,6 +178,7 @@ t.start()
 
         @raise SSHException: if the server fails to execute the command
         """
+        self.last_command = command
         return self.cli.exec_command(command, bufsize)
 
     def recv_exit_status(self, command, timeout):
@@ -188,6 +195,7 @@ t.start()
         @rtype: int or None
         """
         status = None
+        self.last_command = command
         stdin, stdout, stderr = self.cli.exec_command(command)
         if stdout and stderr and stdin:
             for i in range(timeout):
@@ -195,6 +203,10 @@ t.start()
                     status = stdout.channel.recv_exit_status()
                     break
                 time.sleep(1)
+
+            self.last_stdout = stdout.read()
+            self.last_stderr = stderr.read()
+
             stdin.close()
             stdout.close()
             stderr.close()
