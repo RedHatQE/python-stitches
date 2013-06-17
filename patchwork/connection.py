@@ -63,9 +63,15 @@ class Connection():
                 self.hostname = self.parameters['private_ip_address']
                 self.private_hostname = self.parameters['private_ip_address']
                 self.public_hostname = self.parameters['private_ip_address']
-        self.username = username
+        if 'username' in self.parameters:
+            self.username = self.parameters['username']
+        else:
+            self.username = username
         self.output_shell = output_shell
-        self.key_filename = key_filename
+        if 'key_filename' in self.parameters:
+            self.key_filename = self.parameters['key_filename']
+        else:
+            self.key_filename = key_filename
         self.cli = paramiko.SSHClient()
         self.cli.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.disable_rpyc = disable_rpyc
