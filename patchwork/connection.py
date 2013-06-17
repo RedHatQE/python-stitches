@@ -176,7 +176,7 @@ t.start()
 
     def recv_exit_status(self, command, timeout):
         """
-        Executo a command and get its return value
+        Execute a command and get its return value
 
         @param command: command to execute
         @type command: str
