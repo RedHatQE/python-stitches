@@ -1,6 +1,6 @@
-import connection
-import expect
-import structure
+from connection import Connection
+from expect import ExpectFailed, Expect
+from structure import Structure
 
 import logging
 
