@@ -127,12 +127,13 @@ class Connection():
             rnd_id = ''.join(random.choice(string.ascii_lowercase) for x in range(10))
             pid_filename = "/tmp/%s.pid" % rnd_id
             rnd_filename = "/tmp/" + rnd_id + ".tar.gz"
+            rnd_dest_filename = "/tmp/" + rnd_id + rnd_id + ".tar.gz"
             subprocess.check_call(["tar", "-cz", "--exclude", "*.pyc", "--exclude", "*.pyo", "--transform", "s,%s,%s," % (rpyc_dirname[1:][:-5], rnd_id), rpyc_dirname, "-f", rnd_filename], stdout=devnull_fd, stderr=devnull_fd)
             devnull_fd.close()
             
-            self.sftp.put(rnd_filename, rnd_filename)
+            self.sftp.put(rnd_filename, rnd_dest_filename)
             os.remove(rnd_filename)
-            self.recv_exit_status("tar -zxvf %s -C /tmp" % rnd_filename, 10)
+            self.recv_exit_status("tar -zxvf %s -C /tmp" % rnd_dest_filename, 10)
 
             SERVER_SCRIPT = r"""
 import os
