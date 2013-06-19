@@ -126,6 +126,7 @@ class Connection():
             rpyc_dirname = os.path.dirname(rpyc.__file__)
             rnd_id = ''.join(random.choice(string.ascii_lowercase) for x in range(10))
             pid_filename = "/tmp/%s.pid" % rnd_id
+            pid_dest_filename = "/tmp/%s%s.pid" % (rnd_id, rnd_id)
             rnd_filename = "/tmp/" + rnd_id + ".tar.gz"
             rnd_dest_filename = "/tmp/" + rnd_id + rnd_id + ".tar.gz"
             subprocess.check_call(["tar", "-cz", "--exclude", "*.pyc", "--exclude", "*.pyo", "--transform", "s,%s,%s," % (rpyc_dirname[1:][:-5], rnd_id), rpyc_dirname, "-f", rnd_filename], stdout=devnull_fd, stderr=devnull_fd)
@@ -149,11 +150,11 @@ t.start()
 """
             stdin_rpyc, stdout_rpyc, stderr_rpyc = self.exec_command("echo \"%s\" | PYTHONPATH=\"/tmp/%s\" python " % (SERVER_SCRIPT, rnd_id))
             self.recv_exit_status("while [ ! -f %s ]; do sleep 1; done" % (pid_filename), 10)
-            self.sftp.get(pid_filename, pid_filename)
-            pid_fd = open(pid_filename, 'r')
+            self.sftp.get(pid_filename, pid_dest_filename)
+            pid_fd = open(pid_dest_filename, 'r')
             port = int(pid_fd.read())
             pid_fd.close()
-            os.remove(pid_filename)
+            os.remove(pid_dest_filename)
 
             self.pbm = remote_machine.SshMachine(host=self.private_hostname, user=self.username, keyfile=self.key_filename, ssh_opts=["-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no"])
             self.rpyc = rpyc.classic.ssh_connect(self.pbm, port)
