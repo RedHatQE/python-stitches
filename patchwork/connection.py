@@ -170,7 +170,7 @@ t.start()
         if self.pbm is not None:
             self.pbm.close()
 
-    def exec_command(self, command, bufsize=-1):
+    def exec_command(self, command, bufsize=-1, get_pty=False):
         """
         Execute a command in the connection
 
@@ -180,6 +180,9 @@ t.start()
         @param bufsize: buffer size
         @type bufsize: int
 
+        @param get_pty: get pty
+        @type get_pty: bool
+
         @return: the stdin, stdout, and stderr of the executing command
         @rtype: tuple(L{paramiko.ChannelFile}, L{paramiko.ChannelFile},
                       L{paramiko.ChannelFile})
@@ -187,9 +190,9 @@ t.start()
         @raise SSHException: if the server fails to execute the command
         """
         self.last_command = command
-        return self.cli.exec_command(command, bufsize)
+        return self.cli.exec_command(command, bufsize, get_pty=get_pty)
 
-    def recv_exit_status(self, command, timeout):
+    def recv_exit_status(self, command, timeout, get_pty=False):
         """
         Execute a command and get its return value
 
@@ -199,12 +202,15 @@ t.start()
         @param timeout: command execution timeout
         @type timeout: int
 
+        @param get_pty: get pty
+        @type get_pty: bool
+
         @return: the exit code of the process or None in case of timeout
         @rtype: int or None
         """
         status = None
         self.last_command = command
-        stdin, stdout, stderr = self.cli.exec_command(command)
+        stdin, stdout, stderr = self.cli.exec_command(command, get_pty=get_pty)
         if stdout and stderr and stdin:
             for i in range(timeout):
                 if stdout.channel.exit_status_ready():
