@@ -192,7 +192,7 @@ t.start()
         self.last_command = command
         return self.cli.exec_command(command, bufsize, get_pty=get_pty)
 
-    def recv_exit_status(self, command, timeout, get_pty=False):
+    def recv_exit_status(self, command, timeout=10, get_pty=False):
         """
         Execute a command and get its return value
 
