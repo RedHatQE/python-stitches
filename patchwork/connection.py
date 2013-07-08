@@ -148,7 +148,7 @@ fd.write(str(t.port))
 fd.close()
 t.start()
 """
-            stdin_rpyc, stdout_rpyc, stderr_rpyc = self.exec_command("echo \"%s\" | PYTHONPATH=\"/tmp/%s\" python " % (SERVER_SCRIPT, rnd_id))
+            self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = self.exec_command("echo \"%s\" | PYTHONPATH=\"/tmp/%s\" python " % (SERVER_SCRIPT, rnd_id), get_pty=True)
             self.recv_exit_status("while [ ! -f %s ]; do sleep 1; done" % (pid_filename), 10)
             self.sftp.get(pid_filename, pid_dest_filename)
             pid_fd = open(pid_dest_filename, 'r')
@@ -160,6 +160,7 @@ t.start()
             self.rpyc = rpyc.classic.ssh_connect(self.pbm, port)
 
         except Exception, e:
+            self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = None, None, None
             self.pbm = None
             self.rpyc = None
             _LOG.debug("Failed to setup rpyc: %s" % e)
