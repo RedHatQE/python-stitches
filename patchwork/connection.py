@@ -104,10 +104,19 @@ class Connection():
         self.cli.connect(hostname=self.private_hostname,
                          username=self.username,
                          key_filename=self.key_filename)
+        # set keepalive
+        transport = self.cli.get_transport()
+        transport.set_keepalive(3)
+
+        # start shell, non-blocking channel
         self.channel = self.cli.invoke_shell(width=360, height=80)
-        self.sftp = self.cli.open_sftp()
         self.channel.setblocking(0)
+
+        # open sftp
+        self.sftp = self.cli.open_sftp()
+
         if not self.disable_rpyc:
+            # create RPyC
             self._connect_rpyc()
         else:
             self.pbm = None
