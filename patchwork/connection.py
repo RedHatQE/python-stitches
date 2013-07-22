@@ -75,6 +75,7 @@ class Connection():
         self.cli = paramiko.SSHClient()
         self.cli.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.disable_rpyc = disable_rpyc
+        self.timeout = timeout
 
         # debugging buffers
         self.last_command = ""
@@ -103,7 +104,8 @@ class Connection():
     def _connect(self):
         self.cli.connect(hostname=self.private_hostname,
                          username=self.username,
-                         key_filename=self.key_filename)
+                         key_filename=self.key_filename,
+                         timeout=self.timeout)
         # set keepalive
         transport = self.cli.get_transport()
         transport.set_keepalive(3)
