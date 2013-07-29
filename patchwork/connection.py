@@ -86,6 +86,9 @@ class Connection():
             look_for_keys = False
         else:
             look_for_keys = True
+
+        logging.getLogger("paramiko").setLevel(logging.WARNING)
+
         self._connect()
 
     def reconnect(self):
@@ -132,6 +135,8 @@ class Connection():
         try:
             import rpyc
             from plumbum import remote_machine
+
+            logging.getLogger("plumbum").setLevel(logging.WARNING)
 
             devnull_fd = open("/dev/null", "w")
             rpyc_dirname = os.path.dirname(rpyc.__file__)
