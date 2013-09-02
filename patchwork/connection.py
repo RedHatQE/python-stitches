@@ -9,6 +9,7 @@ import os
 import random
 import string
 import logging
+import socket
 
 _LOG = logging.getLogger(__name__)
 
@@ -244,17 +245,38 @@ t.start()
         status = None
         self.last_command = command
         stdin, stdout, stderr = self.cli.exec_command(command, get_pty=get_pty)
+
+
         if stdout and stderr and stdin:
-            for i in range(timeout):
+
+            # prepare for async stdout handling
+            stdout.channel.setblocking(False)
+            self.last_stdout = ''
+
+            timeout = time.time() + timeout
+
+            while time.time() <= timeout:
+                # handle possible channel events until either the recv_exit
+                # or the timeout happens
+
+                try:
+                    self.last_stdout += stdout.read(1024)
+                except socket.timeout:
+                    # no events, sleep
+                    time.sleep(0.1)
+                    continue
+
                 if stdout.channel.exit_status_ready():
                     status = stdout.channel.recv_exit_status()
                     break
-                time.sleep(1)
 
-            self.last_stdout = stdout.read()
+            stdout.channel.setblocking(True)
+
+            # drain the stderr channel
             self.last_stderr = stderr.read()
 
             stdin.close()
             stdout.close()
             stderr.close()
+
         return status
