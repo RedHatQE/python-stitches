@@ -10,6 +10,7 @@ import random
 import string
 import logging
 import socket
+import select
 
 _LOG = logging.getLogger(__name__)
 
@@ -245,38 +246,27 @@ t.start()
         status = None
         self.last_command = command
         stdin, stdout, stderr = self.cli.exec_command(command, get_pty=get_pty)
-
-
         if stdout and stderr and stdin:
-
-            # prepare for async stdout handling
-            stdout.channel.setblocking(False)
+            assert stdin.channel is stdout.channel and stdin.channel is stderr.channel, "all streams share one channel"
+            channel = stdout.channel
+            channel.setblocking(False)
             self.last_stdout = ''
-
-            timeout = time.time() + timeout
-
+            self.last_stderr = ''
+            timeout += time.time()
             while time.time() <= timeout:
                 # handle possible channel events until either the recv_exit
                 # or the timeout happens
-
-                try:
-                    self.last_stdout += stdout.read(1024)
-                except socket.timeout:
-                    # no events, sleep
-                    time.sleep(0.1)
+                r, w, x = select.select([channel], [], [], 0.1)
+                if not r:
                     continue
-
+                if channel.recv_ready():
+                    self.last_stdout += channel.recv(1024)
+                if channel.recv_stderr_ready():
+                    self.last_stderr += channel.recv_stderr(1024)
                 if stdout.channel.exit_status_ready():
                     status = stdout.channel.recv_exit_status()
                     break
-
-            stdout.channel.setblocking(True)
-
-            # drain the stderr channel
-            self.last_stderr = stderr.read()
-
             stdin.close()
             stdout.close()
             stderr.close()
-
         return status
