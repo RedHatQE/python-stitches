@@ -245,13 +245,13 @@ t.start()
         """
         status = None
         self.last_command = command
+        self.last_stdout = ''
+        self.last_stderr = ''
         stdin, stdout, stderr = self.cli.exec_command(command, get_pty=get_pty)
         if stdout and stderr and stdin:
             assert stdin.channel is stdout.channel and stdin.channel is stderr.channel, "all streams share one channel"
             channel = stdout.channel
             channel.setblocking(False)
-            self.last_stdout = ''
-            self.last_stderr = ''
             timeout += time.time()
             while time.time() <= timeout:
                 # handle possible channel events until either the recv_exit
