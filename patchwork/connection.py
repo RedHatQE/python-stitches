@@ -266,7 +266,5 @@ t.start()
                 if stdout.channel.exit_status_ready():
                     status = stdout.channel.recv_exit_status()
                     break
-            stdin.close()
-            stdout.close()
-            stderr.close()
+            channel.close()
         return status
