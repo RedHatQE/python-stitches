@@ -9,8 +9,6 @@ import os
 import random
 import string
 import logging
-import socket
-import select
 
 _LOG = logging.getLogger(__name__)
 
@@ -245,26 +243,18 @@ t.start()
         """
         status = None
         self.last_command = command
-        self.last_stdout = ''
-        self.last_stderr = ''
         stdin, stdout, stderr = self.cli.exec_command(command, get_pty=get_pty)
         if stdout and stderr and stdin:
-            assert stdin.channel is stdout.channel and stdin.channel is stderr.channel, "all streams share one channel"
-            channel = stdout.channel
-            channel.setblocking(False)
-            timeout += time.time()
-            while time.time() <= timeout:
-                # handle possible channel events until either the recv_exit
-                # or the timeout happens
-                r, w, x = select.select([channel], [], [], 0.1)
-                if not r:
-                    continue
-                if channel.recv_ready():
-                    self.last_stdout += channel.recv(1024)
-                if channel.recv_stderr_ready():
-                    self.last_stderr += channel.recv_stderr(1024)
+            for i in range(timeout):
                 if stdout.channel.exit_status_ready():
                     status = stdout.channel.recv_exit_status()
                     break
-            channel.close()
+                time.sleep(1)
+
+            self.last_stdout = stdout.read()
+            self.last_stderr = stderr.read()
+
+            stdin.close()
+            stdout.close()
+            stderr.close()
         return status
