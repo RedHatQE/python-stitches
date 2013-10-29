@@ -193,6 +193,12 @@ t.start()
         """
         Close the connection
         """
+        if hasattr(self, '_lazy_sftp'):
+            self.sftp.close()
+            delattr(self, '_lazy_sftp')
+        if hasattr(self, '_lazy_channel'):
+            self.channel.close()
+            delattr(self, '_lazy_channel')
         if hasattr(self, '_lazy_cli'):
             self.cli.close()
             delattr(self, '_lazy_cli')
