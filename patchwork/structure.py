@@ -14,6 +14,7 @@ class Structure:
     Stateful object to represent whole setup
     """
     def __init__(self):
+        self.logger = logging.getLogger('patchwork.structure')
         self.Instances = {}
         self.config = {}
 
@@ -62,9 +63,9 @@ class Structure:
         """
         if not role in self.Instances.keys():
             self.Instances[role] = []
-        logging.debug('Adding ' + role + ' with private_hostname ' +
-                      instance['private_hostname'] +
-                      ', public_hostname ' + instance['public_hostname'])
+        self.logger.debug('Adding ' + role + ' with private_hostname ' +
+                          instance['private_hostname'] +
+                          ', public_hostname ' + instance['public_hostname'])
         self.Instances[role].append(Connection(instance,
                                                username,
                                                key_filename,
@@ -81,7 +82,7 @@ class Structure:
                              output
         @type output_shell: bool
         """
-        logging.debug('Loading config from ' + yamlfile)
+        self.logger.debug('Loading config from ' + yamlfile)
         fd = open(yamlfile, 'r')
         yamlconfig = yaml.load(fd)
         for instance in yamlconfig['Instances']:
@@ -89,6 +90,6 @@ class Structure:
                              instance,
                              output_shell=output_shell)
         if 'Config' in yamlconfig.keys():
-            logging.debug('Config found: ' + str(yamlconfig['Config']))
+            self.logger.debug('Config found: ' + str(yamlconfig['Config']))
             self.config = yamlconfig['Config'].copy()
         fd.close()

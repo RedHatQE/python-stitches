@@ -10,8 +10,6 @@ import random
 import string
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 def lazyprop(fn):
     attr_name = '_lazy_' + fn.__name__
     @property
@@ -48,6 +46,8 @@ class Connection():
                              output
         @type output_shell: bool
         """
+        self.logger = logging.getLogger('patchwork.connection')
+
         if type(instance) == str:
             self.parameters = {'private_hostname': instance, 'public_hostname': instance}
         else:
@@ -178,7 +178,7 @@ t.start()
 
             except Exception, e:
                 self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = None, None, None
-                _LOG.debug("Failed to setup rpyc: %s" % e)
+                self.logger.debug("Failed to setup rpyc: %s" % e)
                 return None
         else:
             return None

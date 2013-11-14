@@ -20,7 +20,6 @@ class Expect():
     '''
     Stateless class to do expect-ike stuff over connections
     '''
-
     @staticmethod
     def expect_list(connection, regexp_list, timeout=10):
         '''
@@ -45,7 +44,7 @@ class Expect():
         while count < timeout:
             try:
                 recv_part = connection.channel.recv(16384)
-                logging.debug("RCV: " + recv_part)
+                logging.getLogger('patchwork.expect').debug("RCV: " + recv_part)
                 if connection.output_shell:
                     sys.stdout.write(recv_part)
                 result += recv_part
@@ -107,13 +106,13 @@ class Expect():
 
         @raises ExpectFailed
         '''
-        logging.debug("MATCHING: " + regexp.pattern)
+        logging.getLogger('patchwork.expect').debug("MATCHING: " + regexp.pattern)
         result = ""
         count = 0
         while count < timeout:
             try:
                 recv_part = connection.channel.recv(16384)
-                logging.debug("RCV: " + recv_part)
+                logging.getLogger('patchwork.expect').debug("RCV: " + recv_part)
                 if connection.output_shell:
                     sys.stdout.write(recv_part)
                 result += recv_part
@@ -125,7 +124,7 @@ class Expect():
             if match:
                 ret_list = []
                 for group in grouplist:
-                    logging.debug("matched: " + match.group(group))
+                    logging.getLogger('patchwork.expect').debug("matched: " + match.group(group))
                     ret_list.append(match.group(group))
                 return ret_list
             time.sleep(1)
