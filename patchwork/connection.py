@@ -116,6 +116,8 @@ class Connection():
         # start shell, non-blocking channel
         chan = self.cli.invoke_shell(width=360, height=80)
         chan.setblocking(0)
+        # set channel timeout
+        chan.settimeout(10)
         return chan
 
     @lazyprop
