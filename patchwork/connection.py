@@ -9,6 +9,7 @@ import os
 import random
 import string
 import logging
+import socket
 
 def lazyprop(fn):
     attr_name = '_lazy_' + fn.__name__
@@ -118,7 +119,23 @@ class Connection():
         chan.setblocking(0)
         # set channel timeout
         chan.settimeout(10)
-        return chan
+        # now waiting for shell prompt ('username@')
+        result = ""
+        count = 0
+        while count < 10:
+            try:
+                recv_part = chan.recv(16384)
+                result += recv_part
+            except socket.timeout:
+                # socket.timeout here means 'no more data'
+                pass
+
+            if result.find('%s@' % self.username) != -1:
+                return chan
+            time.sleep(1)
+            count += 1
+        # failed to get shell prompt on channel :-(
+        return None
 
     @lazyprop
     def sftp(self):
