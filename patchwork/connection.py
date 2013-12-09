@@ -11,6 +11,9 @@ import string
 import logging
 import socket
 
+class PatchworkConnectionException(Exception):
+    pass
+
 def lazyprop(fn):
     attr_name = '_lazy_' + fn.__name__
     @property
@@ -135,7 +138,7 @@ class Connection():
             time.sleep(1)
             count += 1
         # failed to get shell prompt on channel :-(
-        return None
+        raise PatchworkConnectionException("Failed to get shell prompt")
 
     @lazyprop
     def sftp(self):
