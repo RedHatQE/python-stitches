@@ -149,9 +149,8 @@ class Connection():
     def pbm(self):
         """ Plumbum lazy property """
         if not self.disable_rpyc:
-            from plumbum import remote_machine
-            logging.getLogger("plumbum").setLevel(logging.WARNING)
-            return remote_machine.SshMachine(host=self.private_hostname, user=self.username, keyfile=self.key_filename, ssh_opts=["-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no"])
+            from plumbum import SshMachine
+            return SshMachine(host=self.private_hostname, user=self.username, keyfile=self.key_filename, ssh_opts=["-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no"])
         else:
             return None
 
