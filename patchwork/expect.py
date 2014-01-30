@@ -16,7 +16,7 @@ class ExpectFailed(AssertionError):
     pass
 
 
-class Expect():
+class Expect(object):
     '''
     Stateless class to do expect-ike stuff over connections
     '''

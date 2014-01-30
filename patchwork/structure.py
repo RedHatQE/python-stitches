@@ -9,7 +9,7 @@ import yaml
 from patchwork.connection import Connection
 
 
-class Structure:
+class Structure(object):
     """
     Stateful object to represent whole setup
     """
@@ -35,7 +35,7 @@ class Structure:
             for connection in self.Instances[role]:
                 connection.reconnect()
 
-    def addInstance(self,
+    def add_instance(self,
                     role,
                     instance,
                     username='root',
@@ -83,13 +83,12 @@ class Structure:
         @type output_shell: bool
         """
         self.logger.debug('Loading config from ' + yamlfile)
-        fd = open(yamlfile, 'r')
-        yamlconfig = yaml.load(fd)
-        for instance in yamlconfig['Instances']:
-            self.addInstance(instance['role'].upper(),
-                             instance,
-                             output_shell=output_shell)
-        if 'Config' in yamlconfig.keys():
-            self.logger.debug('Config found: ' + str(yamlconfig['Config']))
-            self.config = yamlconfig['Config'].copy()
-        fd.close()
+        with open(yamlfile, 'r') as yamlfd:
+            yamlconfig = yaml.load(yamlfd)
+            for instance in yamlconfig['Instances']:
+                self.add_instance(instance['role'].upper(),
+                                  instance,
+                                  output_shell=output_shell)
+            if 'Config' in yamlconfig.keys():
+                self.logger.debug('Config found: ' + str(yamlconfig['Config']))
+                self.config = yamlconfig['Config'].copy()

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
+""" setup.py """
+
 from setuptools import setup
-import glob
 
 setup(name='patchwork',
     version='0.4',
@@ -14,7 +15,8 @@ setup(name='patchwork',
         'patchwork'
         ],
     classifiers=[
-            'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+            'License :: OSI Approved :: GNU General Public\
+ License v3 or later (GPLv3+)',
             'Programming Language :: Python',
             'Topic :: Software Development :: Libraries :: Python Modules',
             'Operating System :: POSIX',

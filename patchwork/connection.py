@@ -12,19 +12,22 @@ import logging
 import socket
 
 class PatchworkConnectionException(Exception):
+    """ PatchworkConnection Exception """
     pass
 
-def lazyprop(fn):
-    attr_name = '_lazy_' + fn.__name__
+def lazyprop(func):
+    """ Create lazy property """
+    attr_name = '_lazy_' + func.__name__
     @property
     def _lazyprop(self):
+        """ Create lazy property """
         if not hasattr(self, attr_name):
-            setattr(self, attr_name, fn(self))
+            setattr(self, attr_name, func(self))
         return getattr(self, attr_name)
     return _lazyprop
 
 
-class Connection():
+class Connection(object):
     """
     Stateful object to represent connection to the host
     """
@@ -53,7 +56,8 @@ class Connection():
         self.logger = logging.getLogger('patchwork.connection')
 
         if type(instance) == str:
-            self.parameters = {'private_hostname': instance, 'public_hostname': instance}
+            self.parameters = {'private_hostname': instance,
+                               'public_hostname': instance}
         else:
             self.parameters = instance.copy()
         # hostname is set for compatibility issues only, will be deprecated
@@ -95,21 +99,25 @@ class Connection():
         self.last_stderr = ""
 
         if key_filename:
-            look_for_keys = False
+            self.look_for_keys = False
         else:
-            look_for_keys = True
+            self.look_for_keys = True
+
+        self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = None, None, None
 
         logging.getLogger("paramiko").setLevel(logging.WARNING)
 
     @lazyprop
     def cli(self):
+        """ cli lazy property """
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         client.connect(hostname=self.private_hostname,
                        username=self.username,
                        key_filename=self.key_filename,
-                       timeout=self.timeout)
+                       timeout=self.timeout,
+                       look_for_keys=self.look_for_keys)
         # set keepalive
         transport = client.get_transport()
         transport.set_keepalive(3)
@@ -117,6 +125,7 @@ class Connection():
 
     @lazyprop
     def channel(self):
+        """ channel lazy property """
         # start shell, non-blocking channel
         chan = self.cli.invoke_shell(width=360, height=80)
         chan.setblocking(0)
@@ -142,7 +151,7 @@ class Connection():
 
     @lazyprop
     def sftp(self):
-        # open sftp
+        """ sftp lazy property """
         return self.cli.open_sftp()
 
     @lazyprop
@@ -150,7 +159,10 @@ class Connection():
         """ Plumbum lazy property """
         if not self.disable_rpyc:
             from plumbum import SshMachine
-            return SshMachine(host=self.private_hostname, user=self.username, keyfile=self.key_filename, ssh_opts=["-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no"])
+            return SshMachine(host=self.private_hostname, user=self.username,
+                              keyfile=self.key_filename,
+                              ssh_opts=["-o", "UserKnownHostsFile=/dev/null",
+                                        "-o", "StrictHostKeyChecking=no"])
         else:
             return None
 
@@ -168,14 +180,16 @@ class Connection():
                 pid_dest_filename = "/tmp/%s%s.pid" % (rnd_id, rnd_id)
                 rnd_filename = "/tmp/" + rnd_id + ".tar.gz"
                 rnd_dest_filename = "/tmp/" + rnd_id + rnd_id + ".tar.gz"
-                subprocess.check_call(["tar", "-cz", "--exclude", "*.pyc", "--exclude", "*.pyo", "--transform", "s,%s,%s," % (rpyc_dirname[1:][:-5], rnd_id), rpyc_dirname, "-f", rnd_filename], stdout=devnull_fd, stderr=devnull_fd)
+                subprocess.check_call(["tar", "-cz", "--exclude", "*.pyc", "--exclude", "*.pyo", "--transform",
+                                       "s,%s,%s," % (rpyc_dirname[1:][:-5], rnd_id), rpyc_dirname, "-f", rnd_filename],
+                                      stdout=devnull_fd, stderr=devnull_fd)
                 devnull_fd.close()
-            
+
                 self.sftp.put(rnd_filename, rnd_dest_filename)
                 os.remove(rnd_filename)
                 self.recv_exit_status("tar -zxvf %s -C /tmp" % rnd_dest_filename, 10)
 
-                SERVER_SCRIPT = r"""
+                server_script = r"""
 import os
 print os.environ
 from rpyc.utils.server import ThreadedServer
@@ -187,7 +201,8 @@ fd.write(str(t.port))
 fd.close()
 t.start()
 """
-                self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = self.exec_command("echo \"%s\" | PYTHONPATH=\"/tmp/%s\" python " % (SERVER_SCRIPT, rnd_id), get_pty=True)
+                command = "echo \"%s\" | PYTHONPATH=\"/tmp/%s\" python " % (server_script, rnd_id)
+                self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = self.exec_command(command, get_pty=True)
                 self.recv_exit_status("while [ ! -f %s ]; do sleep 1; done" % (pid_filename), 10)
                 self.sftp.get(pid_filename, pid_dest_filename)
                 pid_fd = open(pid_dest_filename, 'r')
@@ -197,9 +212,8 @@ t.start()
 
                 return rpyc.classic.ssh_connect(self.pbm, port)
 
-            except Exception, e:
-                self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = None, None, None
-                self.logger.debug("Failed to setup rpyc: %s" % e)
+            except Exception, err:
+                self.logger.debug("Failed to setup rpyc: %s" % err)
                 return None
         else:
             return None
@@ -272,7 +286,7 @@ t.start()
         self.last_command = command
         stdin, stdout, stderr = self.cli.exec_command(command, get_pty=get_pty)
         if stdout and stderr and stdin:
-            for i in range(timeout):
+            for _ in xrange(timeout):
                 if stdout.channel.exit_status_ready():
                     status = stdout.channel.recv_exit_status()
                     break
