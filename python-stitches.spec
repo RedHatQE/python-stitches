@@ -1,11 +1,11 @@
-Name:		python-patchwork
+Name:		python-stitches
 Version:	0.4
 Release:	1%{?dist}
 Summary:	Multihost actions toolbox
 
 Group:		Development/Python
 License:	GPLv3+
-URL:		https://github.com/RedHatQE/python-patchwork
+URL:		https://github.com/RedHatQE/python-stitches
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:  noarch
@@ -30,7 +30,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc LICENSE README.md
 %{python_sitelib}/*.egg-info
-%{python_sitelib}/patchwork/*.py*
+%{python_sitelib}/stitches/*.py*
 
 %changelog
 * Tue Jun 04 2013 Vitaly Kuznetsov <vitty@redhat.com> 0.4-1

@@ -6,7 +6,7 @@ Class to represent the whole setup (a bunch of nodes)
 import logging
 import yaml
 
-from patchwork.connection import Connection
+from stitches.connection import Connection
 
 
 class Structure(object):
@@ -14,7 +14,7 @@ class Structure(object):
     Stateful object to represent whole setup
     """
     def __init__(self):
-        self.logger = logging.getLogger('patchwork.structure')
+        self.logger = logging.getLogger('stitches.structure')
         self.Instances = {}
         self.config = {}
 

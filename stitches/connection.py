@@ -11,8 +11,8 @@ import string
 import logging
 import socket
 
-class PatchworkConnectionException(Exception):
-    """ PatchworkConnection Exception """
+class StitchesConnectionException(Exception):
+    """ StitchesConnection Exception """
     pass
 
 def lazyprop(func):
@@ -53,7 +53,7 @@ class Connection(object):
                              output
         @type output_shell: bool
         """
-        self.logger = logging.getLogger('patchwork.connection')
+        self.logger = logging.getLogger('stitches.connection')
 
         if type(instance) == str:
             self.parameters = {'private_hostname': instance,
@@ -147,7 +147,7 @@ class Connection(object):
             time.sleep(1)
             count += 1
         # failed to get shell prompt on channel :-(
-        raise PatchworkConnectionException("Failed to get shell prompt")
+        raise StitchesConnectionException("Failed to get shell prompt")
 
     @lazyprop
     def sftp(self):

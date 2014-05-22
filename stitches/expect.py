@@ -44,7 +44,7 @@ class Expect(object):
         while count < timeout:
             try:
                 recv_part = connection.channel.recv(16384)
-                logging.getLogger('patchwork.expect').debug("RCV: " + recv_part)
+                logging.getLogger('stitches.expect').debug("RCV: " + recv_part)
                 if connection.output_shell:
                     sys.stdout.write(recv_part)
                 result += recv_part
@@ -106,13 +106,13 @@ class Expect(object):
 
         @raises ExpectFailed
         '''
-        logging.getLogger('patchwork.expect').debug("MATCHING: " + regexp.pattern)
+        logging.getLogger('stitches.expect').debug("MATCHING: " + regexp.pattern)
         result = ""
         count = 0
         while count < timeout:
             try:
                 recv_part = connection.channel.recv(16384)
-                logging.getLogger('patchwork.expect').debug("RCV: " + recv_part)
+                logging.getLogger('stitches.expect').debug("RCV: " + recv_part)
                 if connection.output_shell:
                     sys.stdout.write(recv_part)
                 result += recv_part
@@ -124,7 +124,7 @@ class Expect(object):
             if match:
                 ret_list = []
                 for group in grouplist:
-                    logging.getLogger('patchwork.expect').debug("matched: " + match.group(group))
+                    logging.getLogger('stitches.expect').debug("matched: " + match.group(group))
                     ret_list.append(match.group(group))
                 return ret_list
             time.sleep(1)

@@ -4,15 +4,15 @@
 
 from setuptools import setup
 
-setup(name='patchwork',
+setup(name='stitches',
     version='0.4',
     description='Multihost actions toolbox',
     author='Vitaly Kuznetsov',
     author_email='vitty@redhat.com',
-    url='https://github.com/RedHatQE/python-patchwork',
+    url='https://github.com/RedHatQE/python-stitches',
     license="GPLv3+",
     packages=[
-        'patchwork'
+        'stitches'
         ],
     classifiers=[
             'License :: OSI Approved :: GNU General Public\

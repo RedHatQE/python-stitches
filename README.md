@@ -1,9 +1,9 @@
-Patchwork library
+Stitches library
 =================
 
 Overview
 --------
-Patchwork is a wrapper around Paramiko (https://github.com/paramiko/paramiko) and python-rpyc (http://rpyc.readthedocs.org/en/latest/).
+Stitches is a wrapper around Paramiko (https://github.com/paramiko/paramiko) and python-rpyc (http://rpyc.readthedocs.org/en/latest/).
 It allows you to create connections to remote hosts and perform various shell/python actions on remote hosts. The library has 3 main 
 parts: `Connection`, `Expect` and `Structure`
 
@@ -12,9 +12,9 @@ Connection
 `Connection` class represents connection to remote host.
 
 Shell commands usage example:
-      import patchwork
+      import stitches
       
-      In [1]: con = patchwork.connection.Connection('ec2host.eu-west-1.compute.amazonaws.com', key_filename='/home/user/.pem/eu-west-1-iam.pem', username='ec2-user')
+      In [1]: con = stitches.connection.Connection('ec2host.eu-west-1.compute.amazonaws.com', key_filename='/home/user/.pem/eu-west-1-iam.pem', username='ec2-user')
       
       # Return value
       In [2]: con.recv_exit_status("ls -la /etc/passwd")
@@ -57,11 +57,11 @@ Expect
 Example:
 
      # Expect sub-string in output
-     In [1]: patchwork.expect.Expect.ping_pong(con, "cat /etc/redhat-release", 'Red Hat')
+     In [1]: stitches.expect.Expect.ping_pong(con, "cat /etc/redhat-release", 'Red Hat')
      Out[1]: True
 
      # Failure will raise ExpectFailed exception:
-     In [2]: patchwork.expect.Expect.ping_pong(con, "cat /etc/redhat-release", 'Debian')
+     In [2]: stitches.expect.Expect.ping_pong(con, "cat /etc/redhat-release", 'Debian')
      ---------------------------------------------------------------------------
      ExpectFailed                              Traceback (most recent call last)
      ...
@@ -70,10 +70,10 @@ Example:
      [ec2-user@ip-10-234-98-44 ~]$
      
      # Matching
-     In [3]: patchwork.Expect.enter(con, 'cat /etc/redhat-release')
+     In [3]: stitches.Expect.enter(con, 'cat /etc/redhat-release')
      Out[3]: 24
 
-     In [4]: patchwork.expect.Expect.match(con, re.compile('.*release ([0-9,\.]*).*', re.DOTALL))
+     In [4]: stitches.expect.Expect.match(con, re.compile('.*release ([0-9,\.]*).*', re.DOTALL))
      Out[4]: ['6.4']
 
 Structure
@@ -89,7 +89,7 @@ Example YAML:
        role: B_ROLE, username: root, key_filename: /home/user/.pem/eu-west-1-iam.pem}
 
 Usage example:
-     In [1]: s = patchwork.Structure()
+     In [1]: s = stitches.Structure()
 
      In [2]: s.setup_from_yamlfile('/tmp/str.yaml')
      
@@ -104,7 +104,7 @@ Usage example:
 
 Dependencies
 ------------
-Patchwork needs some external dependencies:
+Stitches needs some external dependencies:
 *python-paramiko
 *python-plumbum
 *python-rpyc
