@@ -55,7 +55,7 @@ class Connection(object):
         """
         self.logger = logging.getLogger('stitches.connection')
 
-        if type(instance) == str:
+        if type(instance) in (str, unicode):
             self.parameters = {'private_hostname': instance,
                                'public_hostname': instance}
         else:
