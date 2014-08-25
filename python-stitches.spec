@@ -1,5 +1,5 @@
 Name:		python-stitches
-Version:	0.6
+Version:	0.7
 Release:	1%{?dist}
 Summary:	Multihost actions toolbox
 
@@ -33,6 +33,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/stitches/*.py*
 
 %changelog
+* Mon Aug 25 2014 dparalen <vetrisko@gmail.com> 0.7-1
+- fix: unicode hostname should be detected, too (vetrisko@gmail.com)
+
 * Thu May 22 2014 dparalen <vetrisko@gmail.com> 0.6-1
 - fix missing dependencies (vetrisko@gmail.com)
 
