@@ -229,19 +229,24 @@ t.start()
         Close the connection
         """
         if hasattr(self, '_lazy_sftp'):
-            self.sftp.close()
+            if self.sftp is not None:
+                self.sftp.close()
             delattr(self, '_lazy_sftp')
         if hasattr(self, '_lazy_channel'):
-            self.channel.close()
+            if self.channel is not None:
+                self.channel.close()
             delattr(self, '_lazy_channel')
         if hasattr(self, '_lazy_cli'):
-            self.cli.close()
+            if self.cli is not None:
+                self.cli.close()
             delattr(self, '_lazy_cli')
         if hasattr(self, '_lazy_pbm'):
-            self.pbm.close()
+            if self.pbm is not None:
+                self.pbm.close()
             delattr(self, '_lazy_pbm')
         if hasattr(self, '_lazy_rpyc'):
-            self.rpyc.close()
+            if self.rpyc is not None:
+                self.rpyc.close()
             delattr(self, '_lazy_rpyc')
 
     def exec_command(self, command, bufsize=-1, get_pty=False):
