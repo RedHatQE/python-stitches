@@ -1,5 +1,5 @@
 Name:		python-stitches
-Version:	0.8
+Version:	0.9
 Release:	1%{?dist}
 Summary:	Multihost actions toolbox
 
@@ -33,6 +33,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/stitches/*.py*
 
 %changelog
+* Mon Mar 16 2015 dparalen <vetrisko@gmail.com> 0.9-1
+- fix: min. required paramiko version (vetrisko@gmail.com)
+
 * Fri Sep 12 2014 dparalen <vetrisko@gmail.com> 0.8-1
 - fix cases were attr exists but is None (vetrisko@gmail.com)
 
