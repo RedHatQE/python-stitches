@@ -11,7 +11,7 @@ setup(name='stitches',
     author_email='vitty@redhat.com',
     url='https://github.com/RedHatQE/python-stitches',
     license="GPLv3+",
-    install_requires=['paramiko', 'nose', 'PyYAML', 'plumbum', 'rpyc'],
+    install_requires=['paramiko >= 1.10', 'nose', 'PyYAML', 'plumbum', 'rpyc'],
     packages=[
         'stitches'
         ],
