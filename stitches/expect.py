@@ -8,6 +8,8 @@ import logging
 import socket
 import sys
 
+CTRL_C = '\x03'
+
 
 class ExpectFailed(AssertionError):
     '''
