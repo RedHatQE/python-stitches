@@ -1,5 +1,5 @@
 Name:		python-stitches
-Version:	0.9
+Version:	0.10
 Release:	1%{?dist}
 Summary:	Multihost actions toolbox
 
@@ -33,6 +33,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/stitches/*.py*
 
 %changelog
+* Sun Nov 22 2015 dparalen <vetrisko@gmail.com> 0.10-1
+- introducing a CTRL+C constant (vetrisko@gmail.com)
+
 * Mon Mar 16 2015 dparalen <vetrisko@gmail.com> 0.9-1
 - fix: min. required paramiko version (vetrisko@gmail.com)
 
