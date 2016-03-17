@@ -98,7 +98,7 @@ class Connection(object):
         self.last_stdout = ""
         self.last_stderr = ""
 
-        if key_filename:
+        if self.key_filename:
             self.look_for_keys = False
         else:
             self.look_for_keys = True
