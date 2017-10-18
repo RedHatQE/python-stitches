@@ -45,7 +45,7 @@ class Expect(object):
         count = 0
         while count < timeout:
             try:
-                recv_part = connection.channel.recv(16384)
+                recv_part = connection.channel.recv(32768)
                 logging.getLogger('stitches.expect').debug("RCV: " + recv_part)
                 if connection.output_shell:
                     sys.stdout.write(recv_part)
@@ -113,7 +113,7 @@ class Expect(object):
         count = 0
         while count < timeout:
             try:
-                recv_part = connection.channel.recv(16384)
+                recv_part = connection.channel.recv(32768)
                 logging.getLogger('stitches.expect').debug("RCV: " + recv_part)
                 if connection.output_shell:
                     sys.stdout.write(recv_part)
