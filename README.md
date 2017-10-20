@@ -105,17 +105,17 @@ Usage example:
 Dependencies
 ------------
 Stitches needs some external dependencies:
-*python-paramiko
-*python-plumbum
-*python-rpyc
+* python-paramiko
+* python-plumbum
+* python-rpyc
 
 python-paramiko version in Fedora-19 is OK, plumbum and rpyc should be at least:
-*python-plumbum-1.1.0_gitebe4cc4-2.fc18.noarch
-*python-rpyc-3.3.0git40daa0c6-2.fc18.noarch
+* python-plumbum-1.1.0_gitebe4cc4-2.fc18.noarch
+* python-rpyc-3.3.0git40daa0c6-2.fc18.noarch
 
 Pre-built RPMs can be obtained here: https://rhuiqerpm.s3.amazonaws.com/index.html
 
 Reporting issues
 ----------------
-vkuznets at redhat dot com
+radek at redhat dot com
 
