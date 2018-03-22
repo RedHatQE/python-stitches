@@ -55,7 +55,7 @@ class Connection(object):
         """
         self.logger = logging.getLogger('stitches.connection')
 
-        if type(instance) in (str, unicode):
+        if type(instance) == str:
             self.parameters = {'private_hostname': instance,
                                'public_hostname': instance}
         else:
@@ -136,7 +136,7 @@ class Connection(object):
         count = 0
         while count < 10:
             try:
-                recv_part = chan.recv(16384)
+                recv_part = chan.recv(16384).decode()
                 result += recv_part
             except socket.timeout:
                 # socket.timeout here means 'no more data'
@@ -212,7 +212,7 @@ t.start()
 
                 return rpyc.classic.ssh_connect(self.pbm, port)
 
-            except Exception, err:
+            except Exception as err:
                 self.logger.debug("Failed to setup rpyc: %s" % err)
                 return None
         else:
@@ -291,7 +291,7 @@ t.start()
         self.last_command = command
         stdin, stdout, stderr = self.cli.exec_command(command, get_pty=get_pty)
         if stdout and stderr and stdin:
-            for _ in xrange(timeout):
+            for _ in range(timeout):
                 if stdout.channel.exit_status_ready():
                     status = stdout.channel.recv_exit_status()
                     break
