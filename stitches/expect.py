@@ -202,8 +202,9 @@ class Expect(object):
             raise ExpectFailed("Got timeout (%i seconds) while executing '%s'"
                                % (timeout, command))
         elif retval != expected_status:
-            raise ExpectFailed("Got %s exit status (%s expected)"
-                               % (retval, expected_status))
+            raise ExpectFailed("Got %s exit status (%s expected)\ncmd: %s\nstdout: %s\nstderr: %s"
+                               % (retval, expected_status, connection.last_command,
+                                  connection.last_stdout, connection.last_stderr))
         if connection.output_shell:
             sys.stdout.write("Run '%s', got %i return value\n"
                              % (command, retval))

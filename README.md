@@ -76,6 +76,17 @@ Example:
      In [4]: stitches.expect.Expect.match(con, re.compile('.*release ([0-9,\.]*).*', re.DOTALL))
      Out[4]: ['6.4']
 
+     # Run a command and expect an exit status (0 by default)
+     In [5]: stitches.expect.Expect.expect_retval(con "cat /etc/redhat-release /foo")
+     ---------------------------------------------------------------------------
+     ExpectFailed                              Traceback (most recent call last)
+     ...
+     stitches.expect.ExpectFailed: Got 1 exit status (0 expected)
+     cmd: cat /etc/redhat-release /foo
+     stdout: Red Hat Enterprise Linux release 8.0 Beta (Ootpa)
+
+     stderr: cat: /foo: No such file or directory
+
 Structure
 ---------
 `Structure` class is being used to create whole testing setup with multiple hosts performing different roles. Structure is usually created based on YAML file:
