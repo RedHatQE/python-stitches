@@ -55,11 +55,11 @@ class Connection(object):
         """
         self.logger = logging.getLogger('stitches.connection')
 
-        if type(instance) == str:
+        if type(instance) == dict:
+            self.parameters = instance.copy()
+        else:
             self.parameters = {'private_hostname': instance,
                                'public_hostname': instance}
-        else:
-            self.parameters = instance.copy()
         # hostname is set for compatibility issues only, will be deprecated
         # in future
         if 'private_hostname' in self.parameters.keys() and \
