@@ -6,6 +6,7 @@ import paramiko
 import time
 import subprocess
 import os
+import sys
 import random
 import string
 import logging
@@ -191,7 +192,7 @@ class Connection(object):
 
                 server_script = r"""
 import os
-print os.environ
+print(os.environ)
 from rpyc.utils.server import ThreadedServer
 from rpyc import SlaveService
 import sys
@@ -201,7 +202,14 @@ fd.write(str(t.port))
 fd.close()
 t.start()
 """
-                command = "echo \"%s\" | PYTHONPATH=\"/tmp/%s\" python " % (server_script, rnd_id)
+                if sys.version.startswith("3"):
+                    python_ver = "python3"
+                elif sys.version.startswith("2"):
+                    python_ver = "python2"
+                else:
+                    python_ver = "python"
+                command = "echo \"%s\" | PYTHONPATH=\"/tmp/%s\" %s " % (server_script, rnd_id, python_ver)
+
                 self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = self.exec_command(command, get_pty=True)
                 self.recv_exit_status("while [ ! -f %s ]; do sleep 1; done" % (pid_filename), 10)
                 self.sftp.get(pid_filename, pid_dest_filename)
