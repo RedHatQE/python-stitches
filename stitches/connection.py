@@ -208,6 +208,12 @@ t.start()
                     python_ver = "python2"
                 else:
                     python_ver = "python"
+
+                ret = self.recv_exit_status(python_ver + " -V")
+                if ret != 0:
+                    self.logger.debug("%s not found on remote! ret:%s", python_ver, ret)
+                    return None
+
                 command = "echo \"%s\" | PYTHONPATH=\"/tmp/%s\" %s " % (server_script, rnd_id, python_ver)
 
                 self.stdin_rpyc, self.stdout_rpyc, self.stderr_rpyc = self.exec_command(command, get_pty=True)
@@ -302,11 +308,10 @@ t.start()
             for _ in range(timeout):
                 if stdout.channel.exit_status_ready():
                     status = stdout.channel.recv_exit_status()
+                    self.last_stdout = stdout.read()
+                    self.last_stderr = stderr.read()
                     break
                 time.sleep(1)
-
-            self.last_stdout = stdout.read()
-            self.last_stderr = stderr.read()
 
             stdin.close()
             stdout.close()
