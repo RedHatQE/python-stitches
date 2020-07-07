@@ -194,9 +194,9 @@ class Connection(object):
 import os
 print(os.environ)
 from rpyc.utils.server import ThreadedServer
-from rpyc import SlaveService
+from rpyc import ClassicService
 import sys
-t = ThreadedServer(SlaveService, hostname = 'localhost', port = 0, reuse_addr = True)
+t = ThreadedServer(ClassicService, hostname = 'localhost', port = 0, reuse_addr = True)
 fd = open('""" + pid_filename + r"""', 'w')
 fd.write(str(t.port))
 fd.close()
