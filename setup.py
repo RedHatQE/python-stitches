@@ -5,7 +5,7 @@
 from setuptools import setup
 
 setup(name='stitches',
-    version='0.18',
+    version='0.19',
     description='Multihost actions toolbox',
     author='Vitaly Kuznetsov',
     author_email='vitty@redhat.com',
